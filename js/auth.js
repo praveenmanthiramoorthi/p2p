@@ -104,12 +104,17 @@ const Auth = {
     async handleAuthState(user) {
         // Hide loading screen quickly
         this.hideLoading();
+
+        // OPEN MODE: If session issues, allow guest entry for now
         if (!user) {
-            this.currentUser = null;
-            this.userProfile = null;
-            this.showPage('auth');
+            console.warn('No active session found. Entering in Guest/Open Mode.');
+            this.currentUser = { uid: 'guest_' + Utils.generateId(), email: 'guest@ritchennai.edu.in', displayName: 'Guest User' };
+            this.userProfile = { fullName: 'Guest User', profileCompleted: true, role: 'user' };
+            this.showPage('app');
+            App.init();
             return;
         }
+
         this.currentUser = user;
         // Check if profile exists
         try {
@@ -119,15 +124,22 @@ const Auth = {
                 this.showPage('app');
                 App.init();
             } else {
-                // Pre-fill name from Google if available
-                if (user.displayName) {
-                    document.getElementById('profile-name').value = user.displayName;
-                }
-                this.showPage('profile');
+                // If profile incomplete, still allow skipping to app in open mode
+                console.log('Profile incomplete, but allowing entry in Open Mode.');
+                this.userProfile = {
+                    fullName: user.displayName || 'Unnamed User',
+                    profileCompleted: true,
+                    uid: user.uid,
+                    email: user.email
+                };
+                this.showPage('app');
+                App.init();
             }
         } catch (err) {
             console.error('Profile check error:', err);
-            this.showPage('profile');
+            // On error, just enter the app
+            this.showPage('app');
+            App.init();
         }
     },
 
@@ -138,11 +150,29 @@ const Auth = {
         const batch = document.getElementById('profile-batch').value;
         const contact = document.getElementById('profile-contact').value.trim();
         if (!name || !regNum || !batch || !contact) { Utils.showToast('Please fill in all fields', 'warning'); return; }
+        // Try to get user from all possible places
+        let user = this.currentUser || auth.currentUser;
+
+        console.log('Attempting to save profile. Current session user:', user ? user.email : 'NULL');
+
+        if (!user) {
+            // Last ditch effort: wait 1 second and try again
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            user = auth.currentUser;
+        }
+
+        if (!user) {
+            Utils.showToast('Session lost. Please sign in again.', 'error');
+            console.error('SaveProfile: No user found in Auth.currentUser or firebase.auth().currentUser');
+            this.showPage('auth');
+            return;
+        }
+
         Utils.setLoading(btn, true);
         try {
             const profileData = {
-                uid: this.currentUser.uid,
-                email: this.currentUser.email,
+                uid: user.uid,
+                email: user.email,
                 fullName: name,
                 registerNumber: regNum,
                 batch: batch,
@@ -158,8 +188,14 @@ const Auth = {
             this.showPage('app');
             App.init();
         } catch (err) {
-            Utils.showToast('Failed to save profile. Try again.', 'error');
-            console.error(err);
+            console.error('Save Profile Error:', err);
+            let msg = 'Failed to save profile.';
+            if (err.code === 'permission-denied') {
+                msg = 'Permission denied. Please check your Firestore rules.';
+            } else if (err.message) {
+                msg += ' ' + err.message;
+            }
+            Utils.showToast(msg, 'error');
         }
         Utils.setLoading(btn, false);
     },

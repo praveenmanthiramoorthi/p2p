@@ -1,0 +1,12 @@
+{
+  "name": "p2p-campus-platform",
+  "version": "1.0.0",
+  "description": "Peer-to-Peer Campus Platform — Verified campus community for Q&A, marketplace, lost & found, and team building",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . -l 3000 --no-clipboard",
+    "start": "npx serve . -l 3000"
+  },
+  "keywords": ["campus", "p2p", "community", "firebase"],
+  "author": "P2P Team"
+}

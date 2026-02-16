@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P2P — Peer-to-Peer Campus Platform</title>
+    <meta name="description"
+        content="Connect with your campus community. Ask questions, trade items, find lost belongings, and team up for projects — all in one verified platform." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="stylesheet" href="css/chat.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+</head>
+
+<body>
+    <!-- ============ LOADING SCREEN ============ -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <div class="loader-logo">
+                <span class="logo-p">P</span><span class="logo-2">2</span><span class="logo-p2">P</span>
+            </div>
+            <div class="loader-bar">
+                <div class="loader-bar-fill"></div>
+            </div>
+            <p class="loader-text">Connecting your campus...</p>
+        </div>
+    </div>
+
+    <!-- ============ AUTH PAGE ============ -->
+    <div id="auth-page" class="page" style="display:none;">
+        <div class="auth-container">
+            <div class="auth-hero">
+                <div class="auth-hero-content">
+                    <div class="auth-logo">
+                        <span class="logo-p">P</span><span class="logo-2">2</span><span class="logo-p2">P</span>
+                    </div>
+                    <h1>Your Campus,<br /><span class="gradient-text">Connected.</span></h1>
+                    <p class="auth-subtitle">Ask questions, trade items, find lost belongings, and team up — all within
+                        your verified campus community.</p>
+                    <div class="auth-features">
+                        <div class="auth-feature"><span class="feature-icon">💬</span><span>Q&A Forum</span></div>
+                        <div class="auth-feature"><span class="feature-icon">🛒</span><span>Marketplace</span></div>
+                        <div class="auth-feature"><span class="feature-icon">🔍</span><span>Lost & Found</span></div>
+                        <div class="auth-feature"><span class="feature-icon">🤝</span><span>TeamUp</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="auth-form-section">
+                <!-- LOGIN FORM -->
+                <div id="login-form" class="auth-form-card">
+                    <h2>Welcome Back</h2>
+                    <p class="auth-form-subtitle">Sign in with your institutional email</p>
+                    <form id="login-form-el" autocomplete="off">
+                        <div class="input-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" placeholder="you@institution.edu" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="login-password">Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="login-password" placeholder="••••••••" required />
+                                <button type="button" class="toggle-password" data-target="login-password">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+                            <span>Sign In</span>
+                            <div class="btn-spinner" style="display:none;"></div>
+                        </button>
+                    </form>
+                    <div class="auth-divider"><span>OR</span></div>
+                    <button class="btn btn-google btn-full" id="google-login-btn">
+                        <svg width="20" height="20" viewBox="0 0 48 48">
+                            <path fill="#EA4335"
+                                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                            <path fill="#4285F4"
+                                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                            <path fill="#FBBC05"
+                                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                            <path fill="#34A853"
+                                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                        </svg>
+                        Sign in with Google
+                    </button>
+                    <p class="auth-switch">Don't have an account? <a href="#" id="show-register">Create one</a></p>
+                </div>
+
+                <!-- REGISTER FORM -->
+                <div id="register-form" class="auth-form-card" style="display:none;">
+                    <h2>Join P2P</h2>
+                    <p class="auth-form-subtitle">Create your account with institutional email</p>
+                    <form id="register-form-el" autocomplete="off">
+                        <div class="input-group">
+                            <label for="reg-email">Institutional Email</label>
+                            <input type="email" id="reg-email" placeholder="you@institution.edu" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-password">Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="reg-password" placeholder="Min. 8 characters" required
+                                    minlength="8" />
+                                <button type="button" class="toggle-password" data-target="reg-password">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="reg-confirm-password">Confirm Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="reg-confirm-password" placeholder="Re-enter password"
+                                    required minlength="8" />
+                                <button type="button" class="toggle-password" data-target="reg-confirm-password">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full" id="register-btn">
+                            <span>Create Account</span>
+                            <div class="btn-spinner" style="display:none;"></div>
+                        </button>
+                    </form>
+                    <div class="auth-divider"><span>OR</span></div>
+                    <button class="btn btn-google btn-full" id="google-register-btn">
+                        <svg width="20" height="20" viewBox="0 0 48 48">
+                            <path fill="#EA4335"
+                                d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                            <path fill="#4285F4"
+                                d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                            <path fill="#FBBC05"
+                                d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                            <path fill="#34A853"
+                                d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                        </svg>
+                        Sign up with Google
+                    </button>
+                    <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ PROFILE COMPLETION ============ -->
+    <div id="profile-page" class="page" style="display:none;">
+        <div class="profile-completion-container">
+            <div class="profile-completion-card">
+                <div class="profile-completion-header">
+                    <div class="auth-logo small">
+                        <span class="logo-p">P</span><span class="logo-2">2</span><span class="logo-p2">P</span>
+                    </div>
+                    <h2>Complete Your Profile</h2>
+                    <p>Tell us a bit about yourself to get started</p>
+                </div>
+                <form id="profile-form">
+                    <div class="input-group">
+                        <label for="profile-name">Full Name</label>
+                        <input type="text" id="profile-name" placeholder="John Doe" required />
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-register-number">Register Number</label>
+                        <input type="text" id="profile-register-number" placeholder="e.g. 22CSR001" required />
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-batch">Batch</label>
+                        <select id="profile-batch" required>
+                            <option value="" disabled selected>Select your batch</option>
+                            <option value="22-26">22–26</option>
+                            <option value="23-27">23–27</option>
+                            <option value="24-28">24–28</option>
+                            <option value="25-29">25–29</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-contact">Contact Number <span class="privacy-badge">🔒
+                                Private</span></label>
+                        <input type="tel" id="profile-contact" placeholder="+91 XXXXX XXXXX" required />
+                        <small class="input-hint">Your contact number will never be displayed publicly.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full" id="profile-save-btn">
+                        <span>Complete Profile & Enter P2P</span>
+                        <div class="btn-spinner" style="display:none;"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MAIN APP ============ -->
+    <div id="app" class="app-container" style="display:none;">
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar" id="top-navbar">
+            <div class="navbar-left">
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+                <div class="navbar-logo">
+                    <span class="logo-p">P</span><span class="logo-2">2</span><span class="logo-p2">P</span>
+                </div>
+            </div>
+            <div class="navbar-center">
+                <div class="search-bar" id="search-bar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input type="text" id="search-input" placeholder="Search posts, users, topics..." />
+                </div>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-icon-btn" id="chat-toggle-btn" aria-label="Messages" title="Messages">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span class="notification-dot" id="chat-notification-dot" style="display:none;"></span>
+                </button>
+                <div class="user-menu" id="user-menu">
+                    <button class="avatar-btn" id="avatar-btn" aria-label="User menu">
+                        <div class="avatar" id="user-avatar">U</div>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown" style="display:none;">
+                        <div class="dropdown-header">
+                            <div class="avatar small" id="dropdown-avatar">U</div>
+                            <div>
+                                <p class="dropdown-name" id="dropdown-name">User</p>
+                                <p class="dropdown-email" id="dropdown-email">user@email.com</p>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="my-posts-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg>
+                            My Posts
+                        </button>
+                        <button class="dropdown-item" id="edit-profile-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                            Edit Profile
+                        </button>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item danger" id="logout-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="main-layout">
+            <!-- SIDEBAR NAV -->
+            <nav class="sidebar" id="sidebar">
+                <div class="sidebar-nav">
+                    <button class="sidebar-link active" data-page="home" id="nav-home">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        <span>Home</span>
+                    </button>
+                    <button class="sidebar-link" data-page="qa" id="nav-qa">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        <span>Q&A</span>
+                    </button>
+                    <button class="sidebar-link" data-page="marketplace" id="nav-marketplace">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                        <span>Marketplace</span>
+                    </button>
+                    <button class="sidebar-link" data-page="lostfound" id="nav-lostfound">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <span>Lost & Found</span>
+                    </button>
+                    <button class="sidebar-link" data-page="teamup" id="nav-teamup">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        <span>TeamUp</span>
+                    </button>
+                    <button class="sidebar-link" data-page="support" id="nav-support">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                        </svg>
+                        <span>Support</span>
+                    </button>
+                </div>
+                <div class="sidebar-footer">
+                    <p class="sidebar-version">P2P v1.0</p>
+                </div>
+            </nav>
+
+            <!-- OVERLAY FOR MOBILE -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+            <!-- CONTENT PAGES -->
+            <main class="content-area" id="content-area">
+                <!-- HOME PAGE -->
+                <section id="page-home" class="page-section active">
+                    <div class="page-header">
+                        <div>
+                            <h1>Home Feed</h1>
+                            <p class="page-description">Latest from your campus community</p>
+                        </div>
+                        <button class="btn btn-primary" id="create-post-home-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            New Post
+                        </button>
+                    </div>
+                    <!-- FILTER TABS -->
+                    <div class="filter-tabs" id="home-filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="qa">Q&A</button>
+                        <button class="filter-tab" data-filter="sell">Sell</button>
+                        <button class="filter-tab" data-filter="buy">Buy</button>
+                        <button class="filter-tab" data-filter="need">Need</button>
+                        <button class="filter-tab" data-filter="lost">Lost</button>
+                        <button class="filter-tab" data-filter="found">Found</button>
+                        <button class="filter-tab" data-filter="teamup">TeamUp</button>
+                    </div>
+                    <div class="posts-grid" id="home-posts-grid">
+                        <div class="loading-posts" id="home-loading">
+                            <div class="skeleton-card"></div>
+                            <div class="skeleton-card"></div>
+                            <div class="skeleton-card"></div>
+                        </div>
+                    </div>
+                    <div class="empty-state" id="home-empty" style="display:none;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        <h3>No posts yet</h3>
+                        <p>Be the first to share something with your campus!</p>
+                        <button class="btn btn-primary" id="create-first-post-btn">Create a Post</button>
+                    </div>
+                </section>
+
+                <!-- Q&A PAGE -->
+                <section id="page-qa" class="page-section" style="display:none;">
+                    <div class="page-header">
+                        <div>
+                            <h1>Q&A Forum</h1>
+                            <p class="page-description">Ask questions, share knowledge</p>
+                        </div>
+                        <button class="btn btn-primary" id="create-qa-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Ask Question
+                        </button>
+                    </div>
+                    <div class="posts-grid" id="qa-posts-grid"></div>
+                    <div class="empty-state" id="qa-empty" style="display:none;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        <h3>No questions yet</h3>
+                        <p>Got a question? Ask the community!</p>
+                    </div>
+                </section>
+
+                <!-- MARKETPLACE PAGE -->
+                <section id="page-marketplace" class="page-section" style="display:none;">
+                    <div class="page-header">
+                        <div>
+                            <h1>Marketplace</h1>
+                            <p class="page-description">Buy, sell, or request items</p>
+                        </div>
+                        <button class="btn btn-primary" id="create-market-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            New Listing
+                        </button>
+                    </div>
+                    <div class="filter-tabs" id="market-filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="sell">Selling</button>
+                        <button class="filter-tab" data-filter="buy">Buying</button>
+                        <button class="filter-tab" data-filter="need">Need</button>
+                    </div>
+                    <div class="posts-grid" id="market-posts-grid"></div>
+                    <div class="empty-state" id="market-empty" style="display:none;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                        <h3>No listings yet</h3>
+                        <p>Got something to sell or need? List it here!</p>
+                    </div>
+                </section>
+
+                <!-- LOST & FOUND PAGE -->
+                <section id="page-lostfound" class="page-section" style="display:none;">
+                    <div class="page-header">
+                        <div>
+                            <h1>Lost & Found</h1>
+                            <p class="page-description">Report or find missing items</p>
+                        </div>
+                        <button class="btn btn-primary" id="create-lf-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Report Item
+                        </button>
+                    </div>
+                    <div class="filter-tabs" id="lf-filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="lost">Lost</button>
+                        <button class="filter-tab" data-filter="found">Found</button>
+                    </div>
+                    <div class="posts-grid" id="lf-posts-grid"></div>
+                    <div class="empty-state" id="lf-empty" style="display:none;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <h3>Nothing reported</h3>
+                        <p>Lost or found something? Report it here.</p>
+                    </div>
+                </section>
+
+                <!-- TEAMUP PAGE -->
+                <section id="page-teamup" class="page-section" style="display:none;">
+                    <div class="page-header">
+                        <div>
+                            <h1>TeamUp</h1>
+                            <p class="page-description">Find teammates, share skills</p>
+                        </div>
+                        <button class="btn btn-primary" id="create-teamup-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Post TeamUp
+                        </button>
+                    </div>
+                    <div class="posts-grid" id="teamup-posts-grid"></div>
+                    <div class="empty-state" id="teamup-empty" style="display:none;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        <h3>No team requests</h3>
+                        <p>Looking for teammates? Post here!</p>
+                    </div>
+                </section>
+
+                <!-- SUPPORT PAGE -->
+                <section id="page-support" class="page-section" style="display:none;">
+                    <div class="support-container">
+                        <div class="support-card">
+                            <div class="support-icon">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 16v-4" />
+                                    <path d="M12 8h.01" />
+                                </svg>
+                            </div>
+                            <h1>Support</h1>
+                            <p>Need help or want to report an issue?<br />Reach out to us and we'll get back to you as
+                                soon as possible.</p>
+                            <div class="support-contact">
+                                <div class="support-email-card">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg>
+                                    <div>
+                                        <p class="support-label">Email Us</p>
+                                        <a href="mailto:p2p@support.com" class="support-email">p2p@support.com</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="support-faq">
+                                <h2>Frequently Asked Questions</h2>
+                                <div class="faq-item">
+                                    <button class="faq-question">How do I create a post?</button>
+                                    <div class="faq-answer">Click the "New Post" button on any page, fill in the
+                                        details, and click submit. Your post will be visible to all campus members.
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-question">Is my contact number visible to others?</button>
+                                    <div class="faq-answer">No. Your contact number is strictly private and never
+                                        displayed publicly. Users can communicate through our in-app messaging system.
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-question">How do I report a post?</button>
+                                    <div class="faq-answer">Click the three-dot menu on any post and select "Report".
+                                        Our moderation team will review it promptly.</div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-question">Can I edit or delete my posts?</button>
+                                    <div class="faq-answer">Yes, you can edit or delete your own posts from the post
+                                        detail view or from "My Posts" in your profile menu.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- POST DETAIL VIEW -->
+                <section id="page-post-detail" class="page-section" style="display:none;">
+                    <div class="post-detail-container" id="post-detail-container">
+                        <!-- Dynamically populated -->
+                    </div>
+                </section>
+
+                <!-- MY POSTS PAGE -->
+                <section id="page-my-posts" class="page-section" style="display:none;">
+                    <div class="page-header">
+                        <div>
+                            <h1>My Posts</h1>
+                            <p class="page-description">Manage your published content</p>
+                        </div>
+                    </div>
+                    <div class="posts-grid" id="my-posts-grid"></div>
+                    <div class="empty-state" id="my-posts-empty" style="display:none;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        <h3>No posts yet</h3>
+                        <p>You haven't created any posts yet.</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- CHAT PANEL -->
+        <aside class="chat-panel" id="chat-panel" style="display:none;">
+            <div class="chat-panel-header">
+                <h3>Messages</h3>
+                <button class="chat-close-btn" id="chat-close-btn" aria-label="Close messages">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Chat List -->
+            <div class="chat-list" id="chat-list">
+                <div class="chat-search">
+                    <input type="text" id="chat-search-input" placeholder="Search conversations..." />
+                </div>
+                <div class="chat-conversations" id="chat-conversations">
+                    <div class="chat-empty-state" id="chat-empty">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <p>No conversations yet</p>
+                        <small>Start a conversation from any post</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Chat Window -->
+            <div class="chat-window" id="chat-window" style="display:none;">
+                <div class="chat-window-header" id="chat-window-header">
+                    <button class="chat-back-btn" id="chat-back-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                    </button>
+                    <div class="chat-user-info">
+                        <div class="avatar small" id="chat-user-avatar">U</div>
+                        <span id="chat-user-name">User</span>
+                    </div>
+                </div>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-message-input" placeholder="Type a message..." />
+                    <button class="btn btn-primary btn-icon" id="chat-send-btn" aria-label="Send">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ============ CREATE POST MODAL ============ -->
+    <div class="modal-overlay" id="create-post-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Create Post</h2>
+                <button class="modal-close-btn" id="modal-close-btn" aria-label="Close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form id="create-post-form" class="modal-body">
+                <div class="input-group">
+                    <label for="post-category">Category</label>
+                    <select id="post-category" required>
+                        <option value="" disabled selected>Select category</option>
+                        <option value="qa">Q&A — Ask a Question</option>
+                        <option value="sell">Marketplace — Sell</option>
+                        <option value="buy">Marketplace — Buy</option>
+                        <option value="need">Marketplace — Need</option>
+                        <option value="lost">Lost & Found — Lost</option>
+                        <option value="found">Lost & Found — Found</option>
+                        <option value="teamup">TeamUp</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="post-title">Title</label>
+                    <input type="text" id="post-title" placeholder="Brief, descriptive title..." required
+                        maxlength="120" />
+                    <small class="char-count"><span id="title-char-count">0</span>/120</small>
+                </div>
+                <div class="input-group">
+                    <label for="post-description">Description</label>
+                    <textarea id="post-description" rows="5" placeholder="Provide details..." required
+                        maxlength="2000"></textarea>
+                    <small class="char-count"><span id="desc-char-count">0</span>/2000</small>
+                </div>
+                <div class="input-group">
+                    <label for="post-image">Image (optional)</label>
+                    <div class="image-upload-area" id="image-upload-area">
+                        <input type="file" id="post-image" accept="image/*" />
+                        <div class="upload-placeholder" id="upload-placeholder">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <polyline points="21 15 16 10 5 21" />
+                            </svg>
+                            <p>Click or drag to upload image</p>
+                            <small>JPG, PNG, GIF — Max 5MB</small>
+                        </div>
+                        <img class="upload-preview" id="upload-preview" style="display:none;" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="modal-submit-btn">
+                        <span>Publish</span>
+                        <div class="btn-spinner" style="display:none;"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ REPORT MODAL ============ -->
+    <div class="modal-overlay" id="report-modal" style="display:none;">
+        <div class="modal small">
+            <div class="modal-header">
+                <h2>Report Post</h2>
+                <button class="modal-close-btn report-modal-close" aria-label="Close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form id="report-form" class="modal-body">
+                <div class="input-group">
+                    <label for="report-reason">Reason</label>
+                    <select id="report-reason" required>
+                        <option value="" disabled selected>Select a reason</option>
+                        <option value="spam">Spam or misleading</option>
+                        <option value="inappropriate">Inappropriate content</option>
+                        <option value="harassment">Harassment or bullying</option>
+                        <option value="scam">Scam or fraud</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="report-details">Details (optional)</label>
+                    <textarea id="report-details" rows="3" placeholder="Provide more context..."></textarea>
+                </div>
+                <input type="hidden" id="report-post-id" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary report-modal-close">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ TOAST CONTAINER ============ -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- FIREBASE SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+    <!-- APP SCRIPTS -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/posts.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- SAFETY: Guarantee loading screen hides even if JS errors occur -->
+    <script>
+        (function () {
+            // Force hide loading screen after 3 seconds no matter what
+            setTimeout(function () {
+                var ls = document.getElementById('loading-screen');
+                if (ls && ls.style.display !== 'none') {
+                    ls.style.display = 'none';
+                    // If auth page is still hidden, show it
+                    var authPage = document.getElementById('auth-page');
+                    var app = document.getElementById('app');
+                    if (authPage && authPage.style.display === 'none' && app && app.style.display === 'none') {
+                        authPage.style.display = 'block';
+                    }
+                }
+            }, 3000);
+
+            // Log any global errors so we can debug
+            window.addEventListener('error', function (e) {
+                console.error('P2P Error:', e.message, e.filename, e.lineno);
+                // On error, immediately show auth page
+                var ls = document.getElementById('loading-screen');
+                if (ls) ls.style.display = 'none';
+                var authPage = document.getElementById('auth-page');
+                if (authPage) authPage.style.display = 'block';
+            });
+        })();
+    </script>
+</body>
+
+</html>

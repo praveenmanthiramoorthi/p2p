@@ -17,7 +17,16 @@ service cloud.firestore {
 
     // Helper: Check if user is admin
     function isAdmin() {
-      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isAuth() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        request.auth.token.email in ['praveenmanthiramoorthi@gmail.com', 'p2pcareteam@gmail.com', 'ravivarman.rit@gmail.com']
+      );
+    }
+    
+    // ── Settings Collection (for portal toggles) ──
+    match /settings/{id} {
+      allow read: if isAuth(); // Everyone needs to read portal status
+      allow write: if isAdmin();
     }
 
     // ── Users Collection ──
@@ -26,8 +35,8 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuth();
       allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
-      allow delete: if false; // Users cannot delete their accounts through Firestore
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if false; 
     }
 
     // ── Posts Collection ──
@@ -79,6 +88,12 @@ service cloud.firestore {
       allow create: if isAuth()
         && request.resource.data.reporterId == request.auth.uid;
       allow update, delete: if isAdmin();
+    }
+    
+    // ── Announcements Collection ──
+    match /announcements/{id} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
     }
   }
 }

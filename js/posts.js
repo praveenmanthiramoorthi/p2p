@@ -15,6 +15,21 @@ const Posts = {
         this.bindFilterTabs();
         this.bindSearch();
         this.loadPosts();
+        this.loadAnnouncement();
+    },
+
+    async loadAnnouncement() {
+        try {
+            // Check for most recent announcement
+            const snap = await db.collection('announcements').orderBy('createdAt', 'desc').limit(1).get();
+            if (!snap.empty) {
+                const data = snap.docs[0].data();
+                const el = document.getElementById('announcement-text');
+                if (el) el.textContent = data.text;
+            }
+        } catch (e) {
+            console.error('Announcement load error:', e);
+        }
     },
 
     bindCreateButtons() {
@@ -110,6 +125,9 @@ const Posts = {
     },
 
     async loadPosts() {
+        // Clean up previous listeners if any
+        this.cleanup();
+
         // Real-time listener
         const unsub = db.collection('posts')
             .orderBy('createdAt', 'desc')
@@ -119,9 +137,29 @@ const Posts = {
                 this.renderPosts();
             }, err => {
                 console.error('Posts load error:', err);
-                Utils.showToast('Failed to load posts', 'error');
+                // Even on error, hide skeletons so user isn't stuck
+                this.forceHideSkeletons();
+                if (err.code === 'permission-denied') {
+                    console.warn('Access denied. Please sign in to view posts.');
+                } else {
+                    Utils.showToast('Failed to load posts', 'error');
+                }
             });
         this.unsubscribers.push(unsub);
+
+        // Safety: Hide skeletons after 5s regardless (fallback for slow connections)
+        setTimeout(() => this.forceHideSkeletons(), 5000);
+    },
+
+    forceHideSkeletons() {
+        ['home', 'qa', 'marketplace', 'lostfound', 'teamup', 'my-posts'].forEach(p => {
+            const el = document.getElementById(p + '-loading');
+            if (el) el.style.display = 'none';
+        });
+        // If no posts were loaded, show empty states
+        if (this.allPosts.length === 0) {
+            this.renderPosts();
+        }
     },
 
     getFilteredPosts(search = '') {
@@ -136,6 +174,9 @@ const Posts = {
         if (pageFilters[this.currentPage]) {
             posts = posts.filter(p => pageFilters[this.currentPage].includes(p.category));
         }
+        // Hide reported or hidden posts from regular users
+        posts = posts.filter(p => p.status !== 'reported' && p.status !== 'hidden');
+
         // Apply tab filter
         if (this.currentFilter && this.currentFilter !== 'all') {
             posts = posts.filter(p => p.category === this.currentFilter);
@@ -163,7 +204,13 @@ const Posts = {
             else if (page === 'my-posts') { gridId = 'my-posts-grid'; emptyId = 'my-posts-empty'; }
             const grid = document.getElementById(gridId);
             const empty = document.getElementById(emptyId);
+            const loading = document.getElementById(page + '-loading');
+
             if (!grid) return;
+
+            // Hide loading skeleton once we have a response
+            if (loading) loading.style.display = 'none';
+
             const savedPage = this.currentPage;
             this.currentPage = page;
             let posts;
@@ -320,6 +367,11 @@ const Posts = {
                 postId, reason, details,
                 reporterId: Auth.currentUser.uid,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            // Update post status to hide it
+            await db.collection('posts').doc(postId).update({
+                status: 'reported',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             document.getElementById('report-modal').style.display = 'none';
             document.getElementById('report-form').reset();

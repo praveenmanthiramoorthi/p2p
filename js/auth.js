@@ -33,8 +33,13 @@ const Auth = {
         // Auth state listener
         auth.onAuthStateChanged(user => this.handleAuthState(user));
 
-        // Safety: force-hide loading screen after 3s even if Firebase is slow
-        setTimeout(() => this.hideLoading(), 3000);
+        // Safety: If Firebase doesn't respond in 5s, ensure we're on the auth page
+        setTimeout(() => {
+            if (!this.currentUser && document.getElementById('app').style.display === 'none') {
+                this.showPage('auth');
+                this.hideLoading();
+            }
+        }, 5000);
     },
 
     showForm(type) {
@@ -102,21 +107,29 @@ const Auth = {
     },
 
     async handleAuthState(user) {
-        // Hide loading screen quickly
         this.hideLoading();
 
-        // OPEN MODE: If session issues, allow guest entry for now
         if (!user) {
-            console.warn('No active session found. Entering in Guest/Open Mode.');
-            this.currentUser = { uid: 'guest_' + Utils.generateId(), email: 'guest@ritchennai.edu.in', displayName: 'Guest User' };
-            this.userProfile = { fullName: 'Guest User', profileCompleted: true, role: 'user' };
-            this.showPage('app');
-            App.init();
+            this.currentUser = null;
+            this.userProfile = null;
+            // If we are on admin page and not logged in, just stay on auth
+            this.showPage('auth');
             return;
         }
 
         this.currentUser = user;
-        // Check if profile exists
+
+        // Admin Access Check
+        const isAdminPage = window.location.pathname.includes('admin.html');
+        if (isAdminPage) {
+            if (!APP_CONFIG.adminEmails.includes(user.email)) {
+                Utils.showToast('Not authorized for admin portal.', 'error');
+                setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+                return;
+            }
+        }
+
+        // Check if profile exists in Firestore
         try {
             const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists && doc.data().profileCompleted) {
@@ -124,22 +137,14 @@ const Auth = {
                 this.showPage('app');
                 App.init();
             } else {
-                // If profile incomplete, still allow skipping to app in open mode
-                console.log('Profile incomplete, but allowing entry in Open Mode.');
-                this.userProfile = {
-                    fullName: user.displayName || 'Unnamed User',
-                    profileCompleted: true,
-                    uid: user.uid,
-                    email: user.email
-                };
-                this.showPage('app');
-                App.init();
+                // If profile incomplete, show profile completion page
+                this.userProfile = null;
+                this.showPage('profile');
             }
         } catch (err) {
             console.error('Profile check error:', err);
-            // On error, just enter the app
-            this.showPage('app');
-            App.init();
+            // On error (e.g., first time login), show profile page
+            this.showPage('profile');
         }
     },
 
@@ -150,23 +155,23 @@ const Auth = {
         const batch = document.getElementById('profile-batch').value;
         const contact = document.getElementById('profile-contact').value.trim();
         if (!name || !regNum || !batch || !contact) { Utils.showToast('Please fill in all fields', 'warning'); return; }
-        // Try to get user from all possible places
-        let user = this.currentUser || auth.currentUser;
 
-        console.log('Attempting to save profile. Current session user:', user ? user.email : 'NULL');
+        // Try to get user from all possible sources
+        let user = auth.currentUser || this.currentUser;
 
         if (!user) {
-            // Last ditch effort: wait 1 second and try again
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Wait briefly and try one last time (handles edge cases where Firebase is syncing)
+            await new Promise(r => setTimeout(r, 500));
             user = auth.currentUser;
         }
 
         if (!user) {
-            Utils.showToast('Session lost. Please sign in again.', 'error');
-            console.error('SaveProfile: No user found in Auth.currentUser or firebase.auth().currentUser');
+            Utils.showToast('Session error. Please sign in again.', 'error');
             this.showPage('auth');
             return;
         }
+
+        this.currentUser = user; // Sync back to the Auth object
 
         Utils.setLoading(btn, true);
         try {
@@ -182,7 +187,9 @@ const Auth = {
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                 role: 'user' // for future admin roles
             };
-            await db.collection('users').doc(this.currentUser.uid).set(profileData, { merge: true });
+            await db.collection('users').doc(user.uid).set(profileData, { merge: true });
+            this.currentUser = user; // Ensure it's updated
+            this.userProfile = profileData; // Ensure it's updated
             this.userProfile = profileData;
             Utils.showToast('Profile saved! Welcome to P2P 🎉', 'success');
             this.showPage('app');
@@ -201,9 +208,12 @@ const Auth = {
     },
 
     async logout() {
+        if (!confirm('Are you sure you want to sign out?')) return;
         try {
+            App.cleanup();
             await auth.signOut();
-            Utils.showToast('Signed out', 'info');
+            // Force reload to clear everything from memory
+            window.location.reload();
         } catch (err) {
             Utils.showToast('Sign out failed', 'error');
         }

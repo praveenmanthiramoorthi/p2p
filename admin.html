@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Admin Portal</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body class="admin-body">
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <div class="loader-logo">
+                <span class="logo-p">P</span><span class="logo-2">2</span><span class="logo-p2">P</span>
+            </div>
+            <div class="loader-bar">
+                <div class="loader-bar-fill"></div>
+            </div>
+            <p class="loader-text">Verifying Admin Access...</p>
+        </div>
+    </div>
+
+    <!-- AUTH PAGE (Admin only) -->
+    <div id="auth-page" class="page" style="display:none;">
+        <div class="auth-container admin-auth">
+            <div class="auth-form-card">
+                <div class="auth-logo">
+                    <span class="logo-p">P</span><span class="logo-2">2</span><span class="logo-p2">P</span>
+                    <span class="admin-tag">Admin</span>
+                </div>
+                <h2>Admin Portal</h2>
+                <p class="auth-form-subtitle">Authorized administrators only</p>
+
+                <button class="btn btn-google btn-full" id="google-login-btn">
+                    <svg width="20" height="20" viewBox="0 0 48 48">
+                        <path fill="#EA4335"
+                            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                        <path fill="#4285F4"
+                            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                        <path fill="#FBBC05"
+                            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                        <path fill="#34A853"
+                            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                    </svg>
+                    Sign in with Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN CONTENT -->
+    <div id="app" class="app-container admin-app" style="display:none;">
+        <header class="top-navbar">
+            <div class="navbar-left">
+                <button id="mobile-menu-btn" class="mobile-menu-btn btn-ghost" aria-label="Toggle Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="navbar-logo">
+                    <span class="logo-p">P</span><span class="logo-2">2</span><span class="logo-p2">P</span>
+                    <span class="admin-badge">Admin Panel</span>
+                </div>
+            </div>
+            <div class="navbar-right">
+                <span id="admin-email-display" class="admin-user-email"></span>
+                <button class="btn btn-ghost btn-sm" id="logout-btn">Sign Out</button>
+            </div>
+        </header>
+
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <div class="admin-layout">
+            <aside id="admin-sidebar" class="admin-sidebar">
+                <nav class="admin-nav">
+                    <button class="admin-nav-btn active" data-tab="stats">📊 Statistics</button>
+                    <button class="admin-nav-btn" data-tab="reports">🚩 Reported Posts</button>
+                    <button class="admin-nav-btn" data-tab="users">🎓 Flagged Students</button>
+                    <button class="admin-nav-btn" data-tab="portals">⚙️ Portal Toggles</button>
+                    <button class="admin-nav-btn" data-tab="all-posts">📝 All Posts</button>
+                </nav>
+            </aside>
+
+            <main class="admin-main">
+                <!-- Statistics Tab -->
+                <section id="tab-stats" class="admin-tab-content active">
+                    <h1>Platform Statistics</h1>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Posts</h3>
+                            <p id="stat-total-posts">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Posts Today</h3>
+                            <p id="stat-posts-today">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Users</h3>
+                            <p id="stat-total-users">0</p>
+                        </div>
+                        <div class="stat-card danger">
+                            <h3>Active Reports</h3>
+                            <p id="stat-active-reports">0</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-top-flagged-section" style="margin-top: 40px;">
+                        <h2>Most Flagged Student</h2>
+                        <div id="top-flagged-user-card" class="stat-card"
+                            style="margin-top: 15px; border-left: 5px solid var(--color-danger);">
+                            <p style="font-size: 1.1rem; color: var(--color-text-muted);">No flagged students yet.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reported Posts Tab -->
+                <section id="tab-reports" class="admin-tab-content">
+                    <h1>Reported Content</h1>
+                    <p class="tab-subtitle">Review content flagged by users</p>
+                    <div id="reported-posts-grid" class="admin-posts-grid">
+                        <div class="empty-admin">No active reports. Good job!</div>
+                    </div>
+                </section>
+
+                <!-- Flagged Students Tab -->
+                <section id="tab-users" class="admin-tab-content">
+                    <div class="tab-header-actions">
+                        <div>
+                            <h1>Flagged Students</h1>
+                            <p class="tab-subtitle">Students with the highest cumulative reports</p>
+                        </div>
+                        <div class="export-actions">
+                            <button class="btn btn-secondary btn-sm" id="export-users-pdf-btn">Export PDF</button>
+                            <button class="btn btn-secondary btn-sm" id="export-users-excel-btn">Export Excel</button>
+                        </div>
+                    </div>
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Register No.</th>
+                                    <th>Email</th>
+                                    <th>Total Reports</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="flagged-users-list">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Portal Toggles Tab -->
+                <section id="tab-portals" class="admin-tab-content">
+                    <h1>Portal Management</h1>
+                    <p class="tab-subtitle">Enable or disable campus portals</p>
+                    <div class="portal-toggles-grid">
+                        <div class="portal-toggle-card">
+                            <div class="portal-info">
+                                <h3>Q&A Forum</h3>
+                                <p>Questions and technical discussions</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-qa" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="portal-toggle-card">
+                            <div class="portal-info">
+                                <h3>Marketplace</h3>
+                                <p>Buy and sell campus items</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-marketplace" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="portal-toggle-card">
+                            <div class="portal-info">
+                                <h3>Lost & Found</h3>
+                                <p>Report and find items</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-lostfound" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="portal-toggle-card">
+                            <div class="portal-info">
+                                <h3>TeamUp</h3>
+                                <p>Project and event collaboration</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-teamup" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- All Posts Tab -->
+                <section id="tab-all-posts" class="admin-tab-content">
+                    <div class="tab-header-actions">
+                        <h1>All Published Content</h1>
+                        <button class="btn btn-danger btn-sm" id="delete-all-posts-btn">Delete All Posts</button>
+                    </div>
+                    <div id="all-posts-grid" class="admin-posts-grid"></div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- FIREBASE SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+    <!-- EXPORT LIBRARIES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- APP SCRIPTS -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

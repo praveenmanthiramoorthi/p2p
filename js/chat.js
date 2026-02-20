@@ -70,7 +70,12 @@ const Chat = {
 
     loadConversations() {
         if (!Auth.currentUser) return;
-        if (this.unsubConversations) this.unsubConversations();
+        // Clean up previous listeners if any
+        if (this.unsubConversations) {
+            this.unsubConversations();
+            this.unsubConversations = null;
+        }
+
         this.unsubConversations = db.collection('conversations')
             .where('participants', 'array-contains', Auth.currentUser.uid)
             .orderBy('lastMessageTime', 'desc')

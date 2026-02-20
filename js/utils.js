@@ -53,10 +53,13 @@ const Utils = {
         return labels[cat] || cat;
     },
 
-    // Validate institution email
+    // Validate institution email (supports subdomains like @aiml.ritchennai.edu.in)
     isValidInstitutionEmail(email) {
         if (!APP_CONFIG.institutionDomain) return true;
-        return email.endsWith(`@${APP_CONFIG.institutionDomain}`);
+        const parts = email.toLowerCase().split('@');
+        if (parts.length !== 2) return false;
+        const domain = parts[1];
+        return domain === APP_CONFIG.institutionDomain || domain.endsWith('.' + APP_CONFIG.institutionDomain);
     },
 
     // Escape HTML

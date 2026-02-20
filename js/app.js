@@ -5,15 +5,44 @@ const App = {
     initialized: false,
 
     init() {
-        if (this.initialized) return;
-        this.initialized = true;
         this.setupUI();
+        if (this.initialized) {
+            // Re-sync modules that may have new user context
+            Posts.loadPosts();
+            Chat.loadConversations();
+            return;
+        }
+        this.initialized = true;
         this.setupNavigation();
         this.setupMobileMenu();
         this.setupUserMenu();
         this.setupFAQ();
+        this.setupPortals();
         Posts.init();
         Chat.init();
+    },
+
+    setupPortals() {
+        // Listen for portal toggles from Firestore
+        db.collection('settings').doc('portals').onSnapshot(doc => {
+            if (doc.exists) {
+                const portals = doc.data();
+                Object.keys(portals).forEach(key => {
+                    const enabled = portals[key];
+                    const link = document.querySelector(`.sidebar-link[data-page="${key}"]`);
+                    const welcomeItem = document.querySelector(`.welcome-item[data-portal="${key}"]`);
+
+                    if (link) link.style.display = enabled ? 'flex' : 'none';
+                    if (welcomeItem) welcomeItem.style.display = enabled ? 'flex' : 'none';
+
+                    // If user is on a disabled portal, redirect to home
+                    if (!enabled && Posts.currentPage === key) {
+                        this.navigateTo('home');
+                        Utils.showToast(`The ${key.toUpperCase()} section is temporarily disabled by admin.`, 'info');
+                    }
+                });
+            }
+        });
     },
 
     setupUI() {
@@ -25,6 +54,11 @@ const App = {
             document.getElementById('dropdown-avatar').textContent = initials;
             document.getElementById('dropdown-name').textContent = profile.fullName;
             document.getElementById('dropdown-email').textContent = profile.email || Auth.currentUser?.email;
+
+            // Show admin link if authorized
+            const isAdmin = APP_CONFIG.adminEmails.includes(Auth.currentUser?.email);
+            const adminLink = document.getElementById('go-admin-btn');
+            if (adminLink) adminLink.style.display = isAdmin ? 'flex' : 'none';
         }
     },
 
@@ -120,6 +154,18 @@ const App = {
                 q.parentElement.classList.toggle('open');
             });
         });
+    },
+
+    cleanup() {
+        // Stop all real-time listeners
+        Posts.cleanup();
+        Chat.cleanup();
+        this.initialized = false;
+        // Reset UI
+        document.getElementById('user-avatar').textContent = '';
+        document.getElementById('dropdown-avatar').textContent = '';
+        document.getElementById('dropdown-name').textContent = '';
+        document.getElementById('dropdown-email').textContent = '';
     }
 };
 

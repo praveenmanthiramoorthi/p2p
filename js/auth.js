@@ -120,7 +120,7 @@ const Auth = {
         this.currentUser = user;
 
         // Admin Access Check
-        const isAdminPage = window.location.pathname.includes('admin.html');
+        const isAdminPage = window.location.pathname.includes('admin.html') || window.location.pathname.endsWith('/admin');
         if (isAdminPage) {
             if (!APP_CONFIG.adminEmails.includes(user.email)) {
                 Utils.showToast('Not authorized for admin portal.', 'error');
